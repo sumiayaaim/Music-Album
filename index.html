@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Music Album Section</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: #111117;
+      color: #fff;
+    }
+
+    .album-section {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      flex-wrap: wrap;
+    }
+
+    .album-cover {
+      position: relative;
+      max-width: 400px;
+      transform: rotate(-10deg);
+      z-index: 1;
+      transition: transform 0.3s ease;
+    }
+
+    .album-cover::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(255,255,255,0.05) 40%, transparent 70%);
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(1.4);
+      z-index: -1;
+      animation: spin 10s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: translate(-50%, -50%) scale(1.4) rotate(0deg); }
+      to { transform: translate(-50%, -50%) scale(1.4) rotate(360deg); }
+    }
+
+    .album-cover:hover {
+      transform: rotate(-5deg) scale(1.05);
+    }
+
+    .album-cover img {
+      width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 0 0 10px #111117, 0 0 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .album-info {
+      max-width: 600px;
+      margin-left: 4rem;
+      z-index: 2;
+    }
+
+    .album-info h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      transition: color 0.3s ease, transform 0.3s ease;
+    }
+
+    .album-info h1:hover {
+      color: #aaa;
+      transform: scale(1.05);
+    }
+
+    .album-info p {
+      font-size: 1.2rem;
+      line-height: 1.6;
+      color: #ccc;
+    }
+
+    /* Glowing Button Styles */
+    .album-info button,
+    .controls button {
+      position: relative;
+      z-index: 1;
+      transition: all 0.3s ease;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+      padding: 1rem 2rem;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 10px;
+    background: linear-gradient(90deg, #fffffff9, #f4e4def9, #fffffff9);
+    background-size: 200% 200%;
+    animation: glow 3s ease infinite;
+      color: #111117;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .album-info button::before,
+    .controls button::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 200%;
+      height: 100%;
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.6s ease;
+      z-index: -1;
+    }
+
+    .album-info button:hover::before,
+    .controls button:hover::before {
+      left: 100%;
+    }
+
+    .album-info button:hover,
+    .controls button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    }
+
+    .album-info button:focus,
+    .controls button:focus {
+      outline: none;
+    }
+
+    .background-text {
+      position: absolute;
+      font-size: 20rem;
+      top: 0;
+      right: 5%;
+      color: rgba(255, 255, 255, 0.02);
+      font-weight: 900;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .audio-player {
+      position: absolute;
+      bottom: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      background-color: rgba(255,255,255,0.1);
+      padding: 1rem 2rem;
+      border-radius: 20px;
+      backdrop-filter: blur(5px);
+      text-align: center;
+    }
+
+    .track-title {
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+      font-size: 1rem;
+      color: #fff;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+    }
+
+    .controls button {
+      margin: 0 0.5rem;
+    }
+
+    .visualizer {
+      position: absolute;
+      bottom: 5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 4px;
+      height: 20px;
+      z-index: 9;
+    }
+
+    .bar {
+      width: 4px;
+      background: #fff;
+      animation: pulse 1s infinite;
+    }
+
+    .bar:nth-child(1) { animation-delay: 0s; }
+    .bar:nth-child(2) { animation-delay: 0.1s; }
+    .bar:nth-child(3) { animation-delay: 0.2s; }
+    .bar:nth-child(4) { animation-delay: 0.3s; }
+    .bar:nth-child(5) { animation-delay: 0.4s; }
+
+    @keyframes pulse {
+      0%, 100% { height: 10px; opacity: 0.3; }
+      50% { height: 30px; opacity: 1; }
+    }
+
+    .animate {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s ease-out;
+    }
+
+    .animate.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1024px) {
+      .album-section {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .album-info {
+        margin-left: 0;
+        margin-top: 2rem;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .album-info h1 {
+        font-size: 2rem;
+      }
+
+      .album-info p {
+        font-size: 1rem;
+      }
+
+      .background-text {
+        font-size: 12rem;
+        right: 2%;
+      }
+
+      .audio-player audio {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <section class="album-section">
+    <div class="album-cover animate">
+      <img src="download.jpg" alt="Album Cover">
+    </div>
+    <div class="album-info animate">
+      <h1>Listen our latest album</h1>
+      <p>Music is a universal language that connects people, evokes emotions, and tells stories through rhythm and melody.</p>
+      <button>Browse albums</button>
+    </div>
+    <div class="background-text animate">MUSIC</div>
+
+    <div class="visualizer">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+
+    <div class="audio-player">
+      <div class="track-title" id="track-title">Track 1</div>
+      <div class="controls">
+        <button onclick="prevTrack()">Prev</button>
+        <button onclick="togglePlay()">Play/Pause</button>
+        <button onclick="nextTrack()">Next</button>
+      </div>
+      <audio id="audio" autoplay muted preload="auto" onended="nextTrack()">
+        <source src="shades-of-freedom-2025-by-smith-333808.mp3" type="audio/mpeg">
+      </audio>
+    </div>
+  </section>
+
+  <script>
+    const audio = document.getElementById('audio');
+    const trackTitle = document.getElementById('track-title');
+    const tracks = [
+      { title: "Track 1", src: "shades-of-freedom-2025-by-smith-333808.mp3" },
+      { title: "Track 2", src: "song-english-edm-296526.mp3" },
+      { title: "Track 3", src: "english-poem-108554.mp3" }
+    ];
+    let currentTrack = 0;
+
+    function updateTrack() {
+      audio.src = tracks[currentTrack].src;
+      trackTitle.textContent = tracks[currentTrack].title;
+      audio.play();
+    }
+
+    function nextTrack() {
+      currentTrack = (currentTrack + 1) % tracks.length;
+      updateTrack();
+    }
+
+    function prevTrack() {
+      currentTrack = (currentTrack - 1 + tracks.length) % tracks.length;
+      updateTrack();
+    }
+
+    function togglePlay() {
+      if (audio.paused) {
+        audio.play();
+      } else {
+        audio.pause();
+      }
+    }
+
+    // Scroll animations
+    window.addEventListener('DOMContentLoaded', () => {
+      const elements = document.querySelectorAll('.animate');
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.3 });
+      elements.forEach(el => observer.observe(el));
+    });
+
+    // Initial load
+    updateTrack();
+  </script>
+</body>
+</html>
